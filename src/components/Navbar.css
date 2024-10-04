@@ -1,0 +1,43 @@
+/* Navbar.css */
+
+.navbar {
+  background-color: #4a5568; /* Tailwind gray-800 */
+  padding: 1rem;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-container {
+  flex: 0 0 auto; /* Prevent logo from growing */
+}
+
+.logo {
+  height: 50px; /* Adjust as needed */
+  width: auto;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem; /* Space between links */
+}
+
+.nav-links li {
+  margin: 0;
+}
+
+.nav-links a {
+  color: white; /* Link color */
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: #63b3ed; /* Tailwind blue-400 */
+}
+.logo-container {
+  background-blend-mode: multiply;
+}

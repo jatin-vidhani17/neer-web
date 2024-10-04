@@ -1,0 +1,64 @@
+/* Home.css */
+
+/* Container for the main content */
+.container {
+    max-width: 1200px; /* Limit max width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 1rem; /* Add some padding */
+  }
+  
+  /* Styling for images */
+  .image {
+    border-radius: 0.5rem; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    margin-bottom: 1.5rem; /* Space below images */
+    width: 100%; /* Make images responsive */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  /* Paragraph text styling */
+  .text {
+    font-size: 1.1rem; /* Slightly larger font size for better readability */
+    line-height: 1.6; /* Increase line height for better spacing */
+    margin-bottom: 1.5rem; /* Space below paragraphs */
+  }
+  
+  /* Add top margin for the second paragraph */
+  .margin-top {
+    margin-top: 1.5rem; /* Space above this element */
+  }
+  
+  /* Title styling */
+  .title {
+    font-size: 2rem; /* Larger font for titles */
+    margin: 2rem 0 1rem; /* Margin around the title */
+    color: #2d3748; /* Dark gray color */
+    text-align: center; /* Center the title */
+  }
+  
+  /* Margin below certain sections */
+  .margin-bottom {
+    margin-bottom: 2rem; /* Space below this section */
+  }
+  
+  /* Flexbox for image sections */
+  .flex-images {
+    display: flex; /* Use flexbox for layout */
+    flex-wrap: wrap; /* Wrap images if necessary */
+    justify-content: space-between; /* Space out images */
+  }
+  
+  /* Individual image container styles */
+  .image-container {
+    flex: 1; /* Allow images to grow */
+    min-width: 300px; /* Minimum width for responsive layout */
+    margin: 1rem; /* Margin around each image */
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .flex-images {
+      flex-direction: column; /* Stack images on smaller screens */
+    }
+  }
+  

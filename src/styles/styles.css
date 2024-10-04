@@ -1,0 +1,114 @@
+/* styles.css */
+
+/* Reset some default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Roboto', sans-serif; /* Ensure Roboto font is loaded */
+    background-color: #f9fafb; /* Tailwind gray-100 */
+    color: #4a5568; /* Tailwind gray-800 */
+    line-height: 1.6;
+  }
+  
+  /* Navbar Styles */
+  .navbar {
+    background-color: #4a5568; /* Tailwind gray-800 */
+    padding: 1rem;
+  }
+  
+  .navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .logo {
+    height: 50px;
+  }
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .nav-links a:hover {
+    color: #63b3ed; /* Tailwind blue-400 */
+  }
+  
+  /* Container Styles */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  /* Section Styles */
+  section {
+    padding: 2rem 0;
+    border-bottom: 1px solid #e2e8f0; /* Tailwind gray-300 */
+  }
+  
+  section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #2d3748; /* Tailwind gray-800 */
+  }
+  
+  /* Flexbox Utilities */
+  .flex {
+    display: flex;
+  }
+  
+  .flex-col {
+    flex-direction: column;
+  }
+  
+  .flex-row {
+    flex-direction: row;
+  }
+  
+  .items-center {
+    align-items: center;
+  }
+  
+  .justify-between {
+    justify-content: space-between;
+  }
+  
+  /* Image Styles */
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem; /* Tailwind rounded */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  /* Button Styles */
+  .button {
+    background-color: #63b3ed; /* Tailwind blue-400 */
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.375rem; /* Tailwind rounded */
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .button:hover {
+    background-color: #3182ce; /* Tailwind blue-500 */
+  }
+  
