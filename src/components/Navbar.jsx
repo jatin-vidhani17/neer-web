@@ -7,11 +7,8 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-content">
         <div className="logo-container">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/CcFYBC3BpT7qJRnpKpcyrUEHwOxDwfKSB3Lcfuph8cD2oeFnA.jpg" // Replace with your logo URL
-            alt="Logo"
-            className="logo"
-          />
+        <img src="assets/images/logo.png" alt="Logo" className="logo" />
+
         </div>
         <ul className="nav-links">
           <li><Link to="/">Home</Link></li>
