@@ -19,8 +19,8 @@ const VolunteerYourself = () => {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
+  // Fetch states from the API
   useEffect(() => {
-    // Fetch states from API
     const fetchStates = async () => {
       try {
         const response = await axios.get('https://cdn-api.co-vin.in/api/v2/admin/location/states');
@@ -33,6 +33,7 @@ const VolunteerYourself = () => {
         console.error('Error fetching states:', error);
       }
     };
+
     fetchStates();
   }, []);
 
@@ -54,11 +55,10 @@ const VolunteerYourself = () => {
     // Fetch cities based on the selected state
     if (selectedOption) {
       try {
-        // Example endpoint to get cities based on state ID. Replace with actual API.
-        const response = await axios.get(`https://example.com/api/cities/${selectedOption.value}`);
-        const cityOptions = response.data.cities.map((city) => ({
-          value: city.city_id,
-          label: city.city_name,
+        const response = await axios.get(`https://cdn-api.co-vin.in/api/v2/admin/location/districts/${selectedOption.value}`);
+        const cityOptions = response.data.districts.map((district) => ({
+          value: district.district_id,
+          label: district.district_name,
         }));
         setCities(cityOptions);
       } catch (error) {
@@ -83,140 +83,82 @@ const VolunteerYourself = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
-        <h3 className="text-2xl font-semibold text-center mb-6">New Registration</h3>
+    <div className="h-fit pt-20 flex items-center justify-center bg-gray-800 mt-18">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+        <h2 className="text-center text-2xl font-bold mb-6">New Registration</h2>
         <form id="registrationForm" onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <input
-              type="text"
-              name="fname"
-              placeholder="Enter First Name"
-              required
-              value={formData.fname}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-200 ease-in-out hover:shadow-lg"
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="text"
-              name="lname"
-              placeholder="Enter Last Name"
-              required
-              value={formData.lname}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-200 ease-in-out hover:shadow-lg"
-            />
-          </div>
-          <div className="mb-4">
-            <span className="block text-gray-700 mb-2">Gender:</span>
-            <div className="flex items-center">
-              <label className="mr-4">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="m"
-                  required
-                  checked={formData.gender === 'm'}
-                  onChange={handleChange}
-                  className="mr-1"
-                /> Male
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="gender"
-                  value="f"
-                  required
-                  checked={formData.gender === 'f'}
-                  onChange={handleChange}
-                  className="mr-1"
-                /> Female
-              </label>
-            </div>
-          </div>
-          <div className="mb-4">
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter Email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-200 ease-in-out hover:shadow-lg"
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Enter Mobile No."
-              pattern="[0-9]{10}"
-              required
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-200 ease-in-out hover:shadow-lg"
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="text"
-              name="insti"
-              placeholder="Enter Institute Name"
-              required
-              value={formData.insti}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-200 ease-in-out hover:shadow-lg"
-            />
-          </div>
-          <div className="mb-4">
-            <Select
-              name="state"
-              options={states}
-              onChange={handleStateChange}
-              placeholder="Select State"
-              className="basic-single mb-4"
-              classNamePrefix="select"
-            />
-          </div>
-          <div className="mb-4">
-            <Select
-              name="city"
-              options={cities}
-              onChange={handleCityChange}
-              placeholder="Select City"
-              isDisabled={!formData.state} // Disable city dropdown until a state is selected
-              className="basic-single"
-              classNamePrefix="select"
-            />
-          </div>
-          <div className="mb-4">
-            <input
-              type="password"
-              name="pass"
-              placeholder="Enter Password"
-              required
-              minLength="8"
-              maxLength="16"
-              value={formData.pass}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-200 ease-in-out hover:shadow-lg"
-            />
-          </div>
-          <div className="mb-6">
-            <input
-              type="password"
-              name="pass_conf"
-              placeholder="Confirm Password"
-              required
-              minLength="8"
-              maxLength="16"
-              value={formData.pass_conf}
-              onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 transition duration-200 ease-in-out hover:shadow-lg"
-            />
-          </div>
+          <InputField
+            name="fname"
+            placeholder="Enter First Name"
+            required
+            value={formData.fname}
+            onChange={handleChange}
+          />
+          <InputField
+            name="lname"
+            placeholder="Enter Last Name"
+            required
+            value={formData.lname}
+            onChange={handleChange}
+          />
+          <GenderSelection gender={formData.gender} onChange={handleChange} />
+          <InputField
+            name="email"
+            type="email"
+            placeholder="Enter Email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+          />
+          <InputField
+            name="phone"
+            type="tel"
+            placeholder="Enter Mobile No."
+            pattern="[0-9]{10}"
+            required
+            value={formData.phone}
+            onChange={handleChange}
+          />
+          <InputField
+            name="insti"
+            placeholder="Enter Institute Name"
+            required
+            value={formData.insti}
+            onChange={handleChange}
+          />
+          <SelectField
+            name="state"
+            options={states}
+            onChange={handleStateChange}
+            placeholder="Select State"
+          />
+          <SelectField
+            name="city"
+            options={cities}
+            onChange={handleCityChange}
+            placeholder="Select City"
+            isDisabled={!formData.state} // Disable city dropdown until a state is selected
+          />
+          <InputField
+            name="pass"
+            type="password"
+            placeholder="Enter Password"
+            required
+            minLength="8"
+            maxLength="16"
+            value={formData.pass}
+            onChange={handleChange}
+          />
+          <InputField
+            name="pass_conf"
+            type="password"
+            placeholder="Confirm Password"
+            required
+            minLength="8"
+            maxLength="16"
+            value={formData.pass_conf}
+            onChange={handleChange}
+          />
           <input
             type="submit"
             value="Submit"
@@ -227,5 +169,69 @@ const VolunteerYourself = () => {
     </div>
   );
 };
+
+// Helper component for text input fields
+const InputField = ({ name, type = 'text', placeholder, required, value, onChange, pattern, minLength, maxLength }) => (
+  <div className="mb-4">
+    <input
+      type={type}
+      name={name}
+      placeholder={placeholder}
+      required={required}
+      value={value}
+      onChange={onChange}
+      pattern={pattern}
+      minLength={minLength}
+      maxLength={maxLength}
+      className="w-full p-3 border border-gray-300 rounded focus:outline-none block text-gray-700 text-sm font-bold mb-2"
+    />
+  </div>
+);
+
+// Helper component for gender selection
+const GenderSelection = ({ gender, onChange }) => (
+  <div className="mb-4">
+    <span className="block text-gray-700 mb-2">Gender:</span>
+    <div className="flex items-center">
+      <label className="mr-4">
+        <input
+          type="radio"
+          name="gender"
+          value="m"
+          required
+          checked={gender === 'm'}
+          onChange={onChange}
+          className="mr-1"
+        /> Male
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="gender"
+          value="f"
+          required
+          checked={gender === 'f'}
+          onChange={onChange}
+          className="mr-1"
+        /> Female
+      </label>
+    </div>
+  </div>
+);
+
+// Helper component for select input fields
+const SelectField = ({ name, options, onChange, placeholder, isDisabled }) => (
+  <div className="mb-4">
+    <Select
+      name={name}
+      options={options}
+      onChange={onChange}
+      placeholder={placeholder}
+      isDisabled={isDisabled}
+      className="block text-gray-700 text-sm font-bold mb-2"
+      classNamePrefix="select"
+    />
+  </div>
+);
 
 export default VolunteerYourself;

@@ -20,7 +20,7 @@ const Home = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 mt-20">
       {/* Slider Section */}
       <section className="relative my-8">
         <img
@@ -46,18 +46,19 @@ const Home = () => {
       {/* Section 1 */}
       <section className="section-1">
         <div className="content flex flex-col md:flex-row">
-          <div className="image flex-1 mb-4">
+        <div className="image flex-1 mb-4">
             <img
               src="/assets/images/baner1.jpg"
               alt="Banner"
-              className="w-full rounded-lg shadow-md"
+              //className="w-full rounded-lg shadow-md"
+              className="w-full h-96 object-cover"
             />
           </div>
           <div className="text flex-1 p-4 md:p-8">
-      <p className="text-lg leading-relaxed mb-4">
+      <p className="text-gray-700">
         The sixth SDG (Sustainable Development Goal) of the 2030 UN agenda for sustainable development seeks to ensure availability and sustainable management of water and sanitation for all. The requirement of adequate fresh water quality and quantity is must for successful human consumption, irrigation, fishing, and recreational uses. Water quality is a blanket term for how physical, chemical, and biological characteristics of a water sample measure up to a set of standards.
-      </p>
-      <p className="text-lg leading-relaxed">
+      </p><br></br>
+      <p className="text-gray-700">
         Water quality can be evaluated through a number of tests such as transparency, colour, odour, temperature, acidity, bacteria content, and biological diversity. The purpose of this project is to develop a process of citizen science-based data collection system for determination of parameters to quantify water quality namely turbidity, chlorophyll, suspended sediment etc. The data collection will be supported by a mobile application which captures images of the water body and extracts vital parameters which can be quantified through Inherent Optical Properties (IOP) of water. Other chemical properties can be measured concurrently through instruments and fed through the mobile application using the mobile app as a tool. The pervasive data will be collected and integrated into a common repository.
       </p>
     </div>
@@ -68,7 +69,7 @@ const Home = () => {
       <section className="section-2 my-8">
         <div className="content text-center">
           <h2 className="text-2xl font-bold mb-4">TARGET BENEFICIARIES</h2>
-          <p className="mb-4">The proposed work can be of different use to different stakeholders under different operational modes.</p>
+          <p className="mb-4 text-gray-700">The proposed work can be of different use to different stakeholders under different operational modes.</p>
           <div className="section-2-cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               {

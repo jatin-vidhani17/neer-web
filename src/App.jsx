@@ -13,6 +13,7 @@ import DataTable from './pages/observations/datatable';
 import Publications from './pages/Publications';
 import VolunteerYourself from './pages/VolunteerYourself';
 import './index.css';
+import Footer from './components/Footer';
 
 const App = () => {
     return (
@@ -31,6 +32,7 @@ const App = () => {
                 <Route path="/publications" element={<Publications />} />
                 <Route path="/volunteer-yourself" element={<VolunteerYourself />} />
             </Routes>
+            <Footer/>
         </Router>
     );
 };
