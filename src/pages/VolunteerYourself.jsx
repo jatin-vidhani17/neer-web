@@ -1,6 +1,9 @@
+// src/pages/VolunteerYourself.jsx
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
+import { database } from '../firebaseconfig'; // Import the database
+import { ref, set } from 'firebase/database'; // Import functions to write to the database
 
 const VolunteerYourself = () => {
   const [formData, setFormData] = useState({
@@ -76,10 +79,34 @@ const VolunteerYourself = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted:', formData);
+
+    try {
+      // Replace '.' with '-' in the email to create a valid Firebase path
+      const emailKey = formData.email.replace('.', '-'); 
+
+      // Write form data to Firebase Realtime Database
+      const formRef = ref(database, 'users/' + emailKey); // Use email as a unique key
+      await set(formRef, formData);
+
+      console.log('Form submitted successfully:', formData);
+      // Optionally, reset form data
+      setFormData({
+        fname: '',
+        lname: '',
+        gender: '',
+        email: '',
+        phone: '',
+        insti: '',
+        state: null,
+        city: null,
+        pass: '',
+        pass_conf: '',
+      });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
 
   return (
@@ -162,7 +189,7 @@ const VolunteerYourself = () => {
           <input
             type="submit"
             value="Submit"
-            className="w-full bg-blue-500 text-white p-3 rounded hover:bg-blue-600 transition duration-200 cursor-pointer"
+            className="w-full bg-green-500 text-white p-3 rounded hover:bg-blue-600 transition duration-200 cursor-pointer"
           />
         </form>
       </div>

@@ -70,30 +70,72 @@ const Home = () => {
         <div className="content text-center">
           <h2 className="text-2xl font-bold mb-4">TARGET BENEFICIARIES</h2>
           <p className="mb-4 text-gray-700">The proposed work can be of different use to different stakeholders under different operational modes.</p>
-          <div className="section-2-cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              {
-                title: "Observation-only app",
-                content: "Can used just to observe the measured values for personal use. Farmers can use to check suitability of water for irrigation. Citizens can use for checking usability of water for drinking."
-              },
-              {
-                title: "Crowd source enabled app",
-                content: "The application can be used by the people who can conduct the monitoring and upload the results on common server hence creating CITIZEN SCIENTISTS from common people."
-              },
-              {
-                title: "Decision support app",
-                content: "Governments can use it for decision making. Mission with such objectives needs a lot of ground data which can be analyzed later to identify the causative factors of pollution."
-              },
-              {
-                title: "Mobile lab",
-                content: "The user can be a scientist or someone looking to answer a specific question that requires sophisticated monitoring..."
-              }
-            ].map((card, index) => (
-              <div key={index} className="card bg-white rounded-lg shadow-md p-4">
-                <div className="display-content font-bold">{card.title}</div>
-                <div className="hidden-content text-sm">{card.content}</div>
+          <div className="section-2-cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pl-[250px]">
+            <div class="relative max-w-sm mx-auto bg-white w-[600px] shadow-lg rounded-lg overflow-hidden">
+              <div class="relative">
+                <img src="/assets/images/baner1.jpg" class="w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-110" />
+                  <h2 class="font-bold text-xl mb-2 text-center">Observation-only app</h2>
+                  <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                    <div class="text-white text-center">
+                    <h2 class="font-bold text-xl mb-2">Observation-only app</h2>
+                      <p class="text-base">
+                        Can be used just to observe the measured values for personal use. Farmers can use it to check the suitability of water for irrigation. Citizens can use it for checking the usability of water for drinking.
+                      </p>
+                    </div>
+                  </div>
               </div>
-            ))}
+            </div>
+
+            <br></br>
+
+            <div class="relative max-w-sm mx-auto bg-white w-[600px] shadow-lg rounded-lg overflow-hidden">
+              <div class="relative">
+                <img src="/assets/images/baner2.jpg" class="w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-110" />
+                <h2 class="font-bold text-xl mb-2 text-center">Crowd source enabled app</h2>
+                  <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                    <div class="text-white text-center">
+                      <h2 class="font-bold text-xl mb-2">Crowd source enabled app</h2>
+                      <p class="text-base">
+                        The application can be used by the people who can conduct the monitoring and upload the results on common server hence creating CITIZEN SCIENTISTS from common people.
+                      </p>
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+            <br></br>
+
+            <div class="relative max-w-sm mx-auto bg-white w-[600px] shadow-lg rounded-lg overflow-hidden">
+              <div class="relative">
+                <img src="/assets/images/baner3.jpg" class="w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-110" />
+                <h2 class="font-bold text-xl mb-2">Decision support app</h2>
+                  <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                    <div class="text-white text-center">
+                      <h2 class="font-bold text-xl mb-2">Decision support app</h2>
+                      <p class="text-base">
+                        Governments can use it for decision making. Mission with such objectives needs a lot of ground data which can be analyzed later to identify the causative factors of pollution.
+                      </p>
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+            <br></br>
+
+            <div class="relative max-w-sm mx-auto bg-white w-[600px] shadow-lg rounded-lg overflow-hidden">
+              <div class="relative">
+                <img src="/assets/images/baner2.jpg" class="w-full h-48 object-cover transition-transform duration-300 ease-in-out transform hover:scale-110" />
+                <h2 class="font-bold text-xl mb-2">Mobile lab</h2>
+                  <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                    <div class="text-white text-center">
+                      <h2 class="font-bold text-xl mb-2">Mobile lab</h2>
+                      <p class="text-base">
+                        The user can be a scientist or someone looking to answer a specific question that requires sophisticated monitoring...
+                      </p>
+                    </div>
+                  </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

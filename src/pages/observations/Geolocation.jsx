@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Tooltip, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -7,9 +7,10 @@ import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
+// Create a colored marker icon
 const createColoredIcon = (color) => {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
   canvas.width = 25;
   canvas.height = 41;
 
@@ -19,42 +20,54 @@ const createColoredIcon = (color) => {
   return new Promise((resolve) => {
     img.onload = () => {
       ctx.drawImage(img, 0, 0);
-      ctx.globalCompositeOperation = 'source-in';
+      ctx.globalCompositeOperation = "source-in";
       ctx.fillStyle = color;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       const iconUrl = canvas.toDataURL();
-      resolve(L.icon({
-        iconUrl: iconUrl,
-        iconRetinaUrl: iconUrl,
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowUrl: markerShadow,
-      }));
+      resolve(
+        L.icon({
+          iconUrl: iconUrl,
+          iconRetinaUrl: iconUrl,
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowUrl: markerShadow,
+        })
+      );
     };
   });
 };
 
+const CoordinateDisplay = ({ setCoordinates }) => {
+  useMapEvents({
+    click(e) {
+      setCoordinates([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+  return null;
+};
+
 const GeoLocation = () => {
   const [markerIcons, setMarkerIcons] = useState([]);
+  const [filteredFeatures, setFilteredFeatures] = useState([]);
+  const [coordinates, setCoordinates] = useState(null); // Store clicked coordinates
 
+  // Sample features with positions, names, and types
   const features = [
-    { position: [23.0200, 72.5645], type: "Near Sabarmati Riverfront", color: "#FF5733" }, // Decent Red
-    { position: [23.0225, 72.5700], type: "Near Gandhi Ashram", color: "#33FF57" }, // Decent Green
-    { position: [23.0250, 72.5775], type: "Near Sardar Bridge", color: "#3357FF" }, // Decent Blue
-    { position: [23.0280, 72.5800], type: "Near Ellis Bridge", color: "#DFAB1D" }, // Decent Pink
-    { position: [23.0310, 72.5725], type: "Near Nehru Bridge", color: "#FF9F33" }, // Decent Orange
-    { position: [23.0340, 72.5665], type: "Near Dandi Bridge", color: "#33FFF0" }, // Decent Cyan
-    { position: [23.0360, 72.5750], type: "Near Sardar Patel Bridge", color: "#FFA500" }, // Decent Dark Orange
-    { position: [23.0390, 72.5780], type: "Near Kankaria Lake", color: "#800080" }, // Decent Purple
-    { position: [23.0415, 72.5730], type: "Near Usmanpura", color: "#A52A2A" }, // Decent Brown
-    { position: [23.0450, 72.5700], type: "Near Law Garden", color: "#008000" }, // Decent Dark Green
+    { position: [23.0200, 72.5645], name: "Sabarmati River", type: "RIVER", color: "#FF5733" },
+    { position: [23.0225, 72.5700], name: "Kankaria Lake", type: "LAKE", color: "#33FF57" },
+    { position: [23.0250, 72.5775], name: "Vastrapur Pond", type: "POND", color: "#3357FF" },
+    { position: [23.0280, 72.5800], name: "Ahmedabad Canal", type: "CANAL", color: "#DFAB1D" },
+    { position: [23.0310, 72.5725], name: "Thaltej Tank", type: "TANK", color: "#FF9F33" },
   ];
 
   useEffect(() => {
     const loadIcons = async () => {
-      const icons = await Promise.all(features.map(feature => createColoredIcon(feature.color)));
+      const icons = await Promise.all(
+        features.map((feature) => createColoredIcon(feature.color))
+      );
       setMarkerIcons(icons);
+      setFilteredFeatures(features); // Initialize with all features
     };
 
     loadIcons();
@@ -62,11 +75,9 @@ const GeoLocation = () => {
 
   return (
     <div className="mt-20">
-      <header>
-        {/* Include your header component here */}
-      </header>
       <main className="flex flex-col items-center py-12">
         <div className="container w-4/5">
+          {/* Search section */}
           <div className="head flex flex-row items-end justify-end bg-gray-100 p-2 mb-4">
             <select className="h-8 mx-1" defaultValue="">
               <option value="" disabled>
@@ -107,7 +118,9 @@ const GeoLocation = () => {
               className="h-8 mx-1 px-2"
             />
             <span className="flex flex-col items-end">
-              <a href="" className="mb-1 text-blue-500 hover:underline">Go to Map</a>
+              <a href="" className="mb-1 text-blue-500 hover:underline">
+                Go to Map
+              </a>
               <input
                 type="button"
                 value="Search"
@@ -115,21 +128,81 @@ const GeoLocation = () => {
               />
             </span>
           </div>
-          <MapContainer center={[23.0225, 72.5714]} zoom={12} className="h-[400px] w-full">
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            {markerIcons.map((icon, index) => (
-              <Marker 
-                key={index} 
-                position={features[index].position} 
-                icon={icon} // Use the colored icon
-              >
-                <Tooltip>{features[index].type}</Tooltip>
-              </Marker>
-            ))}
-          </MapContainer>
+
+          {/* Map Section */}
+          <div className="relative w-full h-[400px]">
+            <MapContainer
+              center={[23.0225, 72.5714]}
+              zoom={12}
+              className="h-full w-full"
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <CoordinateDisplay setCoordinates={setCoordinates} />
+              {markerIcons.length > 0 &&
+                filteredFeatures.map((feature, index) => (
+                  <Marker
+                    key={index}
+                    position={feature.position}
+                    icon={markerIcons[index]}
+                  >
+                    <Tooltip>
+                      <div>
+                        <strong>{feature.name}</strong>
+                        <br />
+                        Coordinates: {feature.position[0].toFixed(4)}, {feature.position[1].toFixed(4)}
+                        <br />
+                        Type: {feature.type}
+                      </div>
+                    </Tooltip>
+                  </Marker>
+                ))}
+            </MapContainer>
+
+            {/* Legend box at the bottom-left */}
+            <div
+              className="legend absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow-md w-44"
+              style={{ zIndex: 1000 }} // Ensure it is above the map
+            >
+              <h4 className="font-semibold">Legend</h4>
+              <ul className="text-sm">
+                <li>
+                  <span className="inline-block w-3 h-3 mr-2 bg-[#FF5733]"></span>
+                  River
+                </li>
+                <li>
+                  <span className="inline-block w-3 h-3 mr-2 bg-[#33FF57]"></span>
+                  Lake
+                </li>
+                <li>
+                  <span className="inline-block w-3 h-3 mr-2 bg-[#3357FF]"></span>
+                  Pond
+                </li>
+                <li>
+                  <span className="inline-block w-3 h-3 mr-2 bg-[#DFAB1D]"></span>
+                  Canal
+                </li>
+                <li>
+                  <span className="inline-block w-3 h-3 mr-2 bg-[#FF9F33]"></span>
+                  Tank
+                </li>
+              </ul>
+            </div>
+
+            {/* Display Coordinates */}
+            {coordinates && (
+              <div className="absolute top-4 right-4 bg-white p-2 rounded-lg shadow-md w-auto">
+                <h4 className="font-semibold">Coordinates</h4>
+                <p className="text-sm">
+                  Latitude: {coordinates[0].toFixed(4)}
+                  <br />
+                  Longitude: {coordinates[1].toFixed(4)}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </main>
     </div>

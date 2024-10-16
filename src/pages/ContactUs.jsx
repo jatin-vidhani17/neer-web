@@ -16,7 +16,7 @@ const ContactUs = () => {
     <div className="flex flex-col md:flex-row mt-16">
       {/* Left Section - Contact Form */}
       <div className="block w-full md:w-1/2 p-6 bg-gray-100 rounded-lg shadow-md">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">Contact Us</h1>
+        <h1 className="text-4xl font-bold text-green-500 mb-4">Contact Us</h1>
         <p className="text-gray-600 mb-6">Let us know more about you!</p>
         
         <form className="space-y-4">
@@ -55,8 +55,8 @@ const ContactUs = () => {
             Submit
           </button>
         </form>
-
-        <h2 className="my-6 font-bold text-xl text-gray-800">Contact Information</h2>
+        <br></br>
+        <h2 className="my-6 font-bold text-xl text-green-500">Contact Information</h2>
         <div className="flex flex-col space-y-2">
           <p>
             <strong>Dr. Jyoti Pareek</strong><br />
@@ -73,7 +73,7 @@ const ContactUs = () => {
 
       {/* Right Section - Map and Location Info */}
       <div className="w-full md:w-1/2 p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Location</h2>
+        <h2 className="text-2xl font-bold text-green-500 mb-4">Location</h2>
         <MapContainer center={[23.0225, 72.5714]} zoom={13} className="h-80 w-full rounded-lg shadow-md z-[10]">
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
