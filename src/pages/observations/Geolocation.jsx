@@ -130,7 +130,7 @@ const GeoLocation = () => {
   }, [filteredFeatures]);
 
   return (
-    <div className="mt-20">
+    <div className="mt-20 z-[0] relative">
       <main className="flex flex-col items-center py-12">
         <div className="container w-4/5">
           {/* Search section */}
