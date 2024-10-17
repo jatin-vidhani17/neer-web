@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import axios from 'axios';
-import { database } from '../firebaseconfig'; // Import the database
-import { ref, set } from 'firebase/database'; // Import functions to write to the database
+import { database } from '../firebaseconfig';
+import { ref, set } from 'firebase/database';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import bcrypt from 'bcryptjs';
 
 const VolunteerYourself = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +13,6 @@ const VolunteerYourself = () => {
     lname: '',
     gender: '',
     email: '',
-    phone: '',
     insti: '',
     state: null,
     city: null,
@@ -21,8 +22,8 @@ const VolunteerYourself = () => {
 
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
+  const [errors, setErrors] = useState({});
 
-  // Fetch states from the API
   useEffect(() => {
     const fetchStates = async () => {
       try {
@@ -38,14 +39,21 @@ const VolunteerYourself = () => {
     };
 
     fetchStates();
+
+    // Load form data from session storage
+    const savedData = sessionStorage.getItem('formData');
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => {
+      const newData = { ...prevData, [name]: value };
+      sessionStorage.setItem('formData', JSON.stringify(newData));
+      return newData;
+    });
   };
 
   const handleStateChange = async (selectedOption) => {
@@ -55,7 +63,6 @@ const VolunteerYourself = () => {
       city: null, // Reset city when state changes
     }));
 
-    // Fetch cities based on the selected state
     if (selectedOption) {
       try {
         const response = await axios.get(`https://cdn-api.co-vin.in/api/v2/admin/location/districts/${selectedOption.value}`);
@@ -79,25 +86,60 @@ const VolunteerYourself = () => {
     }));
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    const namePattern = /^[A-Za-z]+$/;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordPattern = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$/;
+
+    if (!namePattern.test(formData.fname)) {
+      newErrors.fname = "First name should contain only letters.";
+    }
+    if (!namePattern.test(formData.lname)) {
+      newErrors.lname = "Last name should contain only letters.";
+    }
+    if (!emailPattern.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+    if (!passwordPattern.test(formData.pass)) {
+      newErrors.pass = "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.";
+    }
+    if (formData.pass !== formData.pass_conf) {
+      newErrors.pass_conf = "Passwords do not match.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      // Replace '.' with '-' in the email to create a valid Firebase path
-      const emailKey = formData.email.replace('.', '-'); 
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(formData.pass, salt);
 
-      // Write form data to Firebase Realtime Database
-      const formRef = ref(database, 'users/' + emailKey); // Use email as a unique key
-      await set(formRef, formData);
+      const dataToStore = {
+        ...formData,
+        pass: hashedPassword,
+      };
+      delete dataToStore.pass_conf;
 
-      console.log('Form submitted successfully:', formData);
-      // Optionally, reset form data
+      const emailKey = formData.email.replace('.', '-');
+      const formRef = ref(database, 'users/' + emailKey);
+      await set(formRef, dataToStore);
+
+      console.log('Form submitted successfully:', dataToStore);
+      sessionStorage.removeItem('formData');
       setFormData({
         fname: '',
         lname: '',
         gender: '',
         email: '',
-        phone: '',
         insti: '',
         state: null,
         city: null,
@@ -106,6 +148,25 @@ const VolunteerYourself = () => {
       });
     } catch (error) {
       console.error('Error submitting form:', error);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log('User signed in with Google:', user);
+
+      const userRef = ref(database, 'users/' + user.email.replace('.', '-'));
+      await set(userRef, {
+        fname: user.displayName.split(' ')[0],
+        lname: user.displayName.split(' ')[1],
+        email: user.email,
+      });
+    } catch (error) {
+      console.error('Error during Google sign-in:', error);
     }
   };
 
@@ -120,6 +181,7 @@ const VolunteerYourself = () => {
             required
             value={formData.fname}
             onChange={handleChange}
+            error={errors.fname}
           />
           <InputField
             name="lname"
@@ -127,6 +189,7 @@ const VolunteerYourself = () => {
             required
             value={formData.lname}
             onChange={handleChange}
+            error={errors.lname}
           />
           <GenderSelection gender={formData.gender} onChange={handleChange} />
           <InputField
@@ -136,15 +199,7 @@ const VolunteerYourself = () => {
             required
             value={formData.email}
             onChange={handleChange}
-          />
-          <InputField
-            name="phone"
-            type="tel"
-            placeholder="Enter Mobile No."
-            pattern="[0-9]{10}"
-            required
-            value={formData.phone}
-            onChange={handleChange}
+            error={errors.email}
           />
           <InputField
             name="insti"
@@ -164,7 +219,7 @@ const VolunteerYourself = () => {
             options={cities}
             onChange={handleCityChange}
             placeholder="Select City"
-            isDisabled={!formData.state} // Disable city dropdown until a state is selected
+            isDisabled={!formData.state}
           />
           <InputField
             name="pass"
@@ -175,6 +230,7 @@ const VolunteerYourself = () => {
             maxLength="16"
             value={formData.pass}
             onChange={handleChange}
+            error={errors.pass}
           />
           <InputField
             name="pass_conf"
@@ -185,6 +241,7 @@ const VolunteerYourself = () => {
             maxLength="16"
             value={formData.pass_conf}
             onChange={handleChange}
+            error={errors.pass_conf}
           />
           <input
             type="submit"
@@ -192,13 +249,19 @@ const VolunteerYourself = () => {
             className="w-full bg-green-500 text-white p-3 rounded hover:bg-blue-600 transition duration-200 cursor-pointer"
           />
         </form>
+        <button
+          onClick={handleGoogleSignIn}
+          className="mt-4 w-full bg-red-500 text-white p-3 rounded hover:bg-red-600 transition duration-200 cursor-pointer"
+        >
+          Sign in with Google
+        </button>
       </div>
     </div>
   );
 };
 
 // Helper component for text input fields
-const InputField = ({ name, type = 'text', placeholder, required, value, onChange, pattern, minLength, maxLength }) => (
+const InputField = ({ name, type = 'text', placeholder, required, value, onChange, error }) => (
   <div className="mb-4">
     <input
       type={type}
@@ -207,11 +270,9 @@ const InputField = ({ name, type = 'text', placeholder, required, value, onChang
       required={required}
       value={value}
       onChange={onChange}
-      pattern={pattern}
-      minLength={minLength}
-      maxLength={maxLength}
-      className="w-full p-3 border border-gray-300 rounded focus:outline-none block text-gray-700 text-sm font-bold mb-2"
+      className={`w-full p-3 border ${error ? 'border-red-500' : 'border-gray-300'} rounded focus:outline-none block text-gray-700 text-sm font-bold mb-2`}
     />
+    {error && <span className="text-red-500 text-sm">{error}</span>}
   </div>
 );
 
