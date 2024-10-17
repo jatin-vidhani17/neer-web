@@ -1,0 +1,32 @@
+{
+    "-O9KrkcZvV6zJP40iH7n": {
+        "Conductivity": "10",
+        "Dissolved O2": "10",
+        "Temperature": "100",
+        "Water Depth": "10",
+        "date": "2024-10-15",
+        "latitude": 23.0830524,
+        "longitude": 72.6232766,
+        "pH": "5",
+        "time": "20:37:55",
+        "user_email": "patel1828dev1234@gmail.com"
+    },
+    "-O9KsgPkik_IHRPcu8CE": {
+        "Temperature": "58",
+        "date": "2024-10-14",
+        "latitude": 23.0830686,
+        "longitude": 72.6234592,
+        "pH": "10",
+        "time": "20:42:00",
+        "user_email": "patel1828dev1234@gmail.com"
+    },
+    "-O9Kt--WJ90SjPe2PTMz": {
+        "Temperature": "67",
+        "date": "2024-10-16",
+        "latitude": 23.0830686,
+        "longitude": 72.6234592,
+        "pH": "14",
+        "time": "20:43:20",
+        "user_email": "patel1828dev1234@gmail.com"
+    }
+}
