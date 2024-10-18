@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { getDatabase, ref, onValue } from 'firebase/database';
 
@@ -9,7 +8,6 @@ const DataTable = () => {
   const [filterOperation, setFilterOperation] = useState('');
   const [filterValue, setFilterValue] = useState('');
 
-  // Fetch data from Firebase
   useEffect(() => {
     const db = getDatabase();
     const observationRef = ref(db, 'observation_data');
@@ -20,43 +18,95 @@ const DataTable = () => {
         id: key,
         ...fetchedData[key],
       }));
-      setData(formattedData);
-      setFilteredData(formattedData); // Initial display of all data
+
+      // Parse date properly and sort by date in descending order
+      const sortedData = formattedData.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateB - dateA; // Newest first
+      });
+
+      setData(sortedData);
+      setFilteredData(sortedData); // Initially display all data
     });
   }, []);
 
-  // Dynamic filter input type
   const getInputType = () => {
     if (filterField === 'date') return 'date';
-    if (filterField === 'Temperature' || filterField === 'pH' || filterField === 'Conductivity' || filterField === 'spm') return 'number';
+    if (filterField === 'time') return 'time'; // Time input type for time field
+    if (['Temperature', 'pH', 'Conductivity', 'spm'].includes(filterField)) return 'number';
     return 'text';
   };
 
-  // Handle filter logic
+  const isValidTime = (time) => {
+    const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d(\.\d{1,3})?)?$/;
+    return timeRegex.test(time);
+  };
+
   const handleFilter = () => {
     if (!filterField || !filterOperation || !filterValue) return;
 
     const filtered = data.filter((entry) => {
       const entryValue = entry[filterField] || '';
+
+      // Handle date filtering separately
+      if (filterField === 'date') {
+        const filterDate = new Date(filterValue);
+        const entryDate = new Date(entryValue);
+        switch (filterOperation) {
+          case '=':
+            return entryDate.toDateString() === filterDate.toDateString();
+          case '>':
+            return entryDate > filterDate;
+          case '>=':
+            return entryDate >= filterDate;
+          case '<':
+            return entryDate < filterDate;
+          case '<=':
+            return entryDate <= filterDate;
+          default:
+            return true;
+        }
+      }
+
+      // Handle time filtering separately
+      if (filterField === 'time') {
+        if (!isValidTime(filterValue)) {
+          alert('Please enter a valid time in HH:mm format.');
+          return false;
+        }
+        return filterOperation === '=' ? entryValue === filterValue : false;
+      }
+
+      // For numeric comparisons
+      const numericValue = parseFloat(entryValue);
+      const filterNumericValue = parseFloat(filterValue);
+
       switch (filterOperation) {
         case '=':
-          return entryValue == filterValue;
+          return numericValue === filterNumericValue;
         case '>':
-          return entryValue > filterValue;
+          return numericValue > filterNumericValue;
         case '>=':
-          return entryValue >= filterValue;
+          return numericValue >= filterNumericValue;
         case '<':
-          return entryValue < filterValue;
+          return numericValue < filterNumericValue;
         case '<=':
-          return entryValue <= filterValue;
+          return numericValue <= filterNumericValue;
         default:
           return true;
       }
     });
-    setFilteredData(filtered);
+
+    const sortedFilteredData = filtered.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateB - dateA; // Newest first
+    });
+
+    setFilteredData(sortedFilteredData);
   };
 
-  // Reset filter and show all data
   const resetFilter = () => {
     setFilteredData(data);
     setFilterField('');
@@ -64,11 +114,16 @@ const DataTable = () => {
     setFilterValue('');
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleFilter();
+    }
+  };
+
   return (
     <div className="mt-20">
       <main className="flex flex-col items-center py-12">
         <div className="container w-4/5">
-          {/* Search and Filter section */}
           <div className="head flex flex-row items-end justify-end bg-gray-100 p-4 mb-4 space-x-4">
             <select
               className="h-10 px-2 border"
@@ -108,6 +163,7 @@ const DataTable = () => {
               className="h-10 px-2 border"
               value={filterValue}
               onChange={(e) => setFilterValue(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
 
             <button
@@ -125,7 +181,6 @@ const DataTable = () => {
             </button>
           </div>
 
-          {/* Data Table */}
           <table className="table-auto w-full text-left bg-white shadow-md rounded border-collapse border border-gray-200">
             <thead>
               <tr className="bg-gray-100">
@@ -161,7 +216,7 @@ const DataTable = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="12" className="text-center py-4">No data available</td>
+                  <td colSpan="11" className="text-center py-4">No data available</td>
                 </tr>
               )}
             </tbody>
